@@ -29,13 +29,11 @@ public class ExpenseDaoImpl implements ExpenseDao {
 	@Override
 	@Transactional(readOnly=true)
 	public List<Expense> getExpenses() {
-		return sessionFactory.getCurrentSession().createQuery("select Expense e").list();
+		return sessionFactory.getCurrentSession().createQuery("from Expense e").list();
 	}
 
 	@Override
 	public Expense getExpense(Long id) {
-		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("id", id);
 		return null;
 	}
 
