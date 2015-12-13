@@ -27,32 +27,30 @@ public class ExpenseDaoImpl implements ExpenseDao {
 	}
 
 	@Override
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	public List<Expense> getExpenses() {
-		return sessionFactory.getCurrentSession().createQuery("from Expense e").list();
+		return sessionFactory.getCurrentSession().getNamedQuery("Expense.SelectAll").list();
 	}
 
 	@Override
 	public Expense getExpense(Long id) {
-		return null;
+		return (Expense) sessionFactory.getCurrentSession().getNamedQuery("Expense.SelectById")
+				.setParameter("id", id).uniqueResult();
 	}
 
 	@Override
 	public void updateExpense(Expense expense) {
-		// TODO Auto-generated method stub
-
+		sessionFactory.getCurrentSession().saveOrUpdate(expense);
 	}
 
 	@Override
-	public void saveExpense(Expense expense) {
-		// TODO Auto-generated method stub
-
+	public Expense saveExpense(Expense expense) {
+		return (Expense) sessionFactory.getCurrentSession().save(expense);
 	}
 
 	@Override
 	public void deleteExpense(Expense expense) {
-		// TODO Auto-generated method stub
-
+		sessionFactory.getCurrentSession().delete(expense);
 	}
 
 }

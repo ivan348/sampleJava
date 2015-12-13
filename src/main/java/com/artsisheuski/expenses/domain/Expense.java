@@ -1,13 +1,13 @@
 package com.artsisheuski.expenses.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="expenses")
+@NamedQueries({
+		@NamedQuery(name = "Expense.SelectAll", query = "from Expense e"),
+		@NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id")
+})
 public class Expense {
 	private Long id;
 	private String name;

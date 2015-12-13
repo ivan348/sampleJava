@@ -8,8 +8,8 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.1.xsd
     http://www.springframework.org/schema/tx
-    http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">    
-	<context:component-scan base-package="com.artsisheuski.expenses"></context:component-scan>
+    http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	<context:component-scan base-package="com.artsisheuski.expenses.model" />
 	<context:annotation-config />
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName">
@@ -26,13 +26,13 @@
 		</property>
 	</bean>
 	<context:property-placeholder location="classpath:jdbc.properties" />
-	<tx:annotation-driven/>
+	<tx:annotation-driven />
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory"></property>
+		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="packagesToScan" value="com.artsisheuski.expenses.domain"/>
-		<property name="dataSource" ref="dataSource"/>
+		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop>
