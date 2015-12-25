@@ -3,6 +3,8 @@ package com.artsisheuski.expenses.controller;
 import java.util.List;
 
 import com.artsisheuski.expenses.domain.Expense;
+import com.artsisheuski.expenses.domain.User;
+import com.artsisheuski.expenses.model.UserDao;
 import com.artsisheuski.expenses.service.impl.ExpensesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +28,24 @@ public class ExpenseController {
 	@Autowired
 	private ExpensesService expensesService;
 
+	@Autowired
+	private UserDao userDao;
+
 	@Transactional(value="transactionManager")
-	@RequestMapping(method = RequestMethod.GET, value="/", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public
 	@ResponseBody
 	List<Expense> getExpenses() {
 		return expensesService.getExpenses();
+	}
+
+	@Transactional(value="transactionManager")
+	@RequestMapping(value = "users",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public
+	@ResponseBody
+	List<User> getUsers() {
+		List<User> list = userDao.getUsers();
+		return list;
 	}
 	
 }

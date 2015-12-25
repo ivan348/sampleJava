@@ -5,3 +5,4 @@ target/
 .project
 .springBeans
 expenses.iml
+/src/main/webapp/views/static/bower_components

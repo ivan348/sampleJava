@@ -1,11 +1,13 @@
 package com.artsisheuski.expenses.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="expenses")
 @NamedQueries({
-		@NamedQuery(name = "Expense.SelectAll", query = "from Expense e"),
+		@NamedQuery(name = "Expense.SelectAll", query = "select distinct e from Expense e left join fetch e.user u"),
 		@NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id")
 })
 public class Expense {
@@ -15,6 +17,7 @@ public class Expense {
 	private String type;
 	private String currency;
 	private String category;
+	private User user;
 
 	@Id
 	@GeneratedValue
@@ -70,6 +73,17 @@ public class Expense {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override
