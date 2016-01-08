@@ -24,7 +24,7 @@ define(function(require){
 		http.delete("/api/expenses", val).done(Expenses.remove);
 	});
 	actions.getStat.listen(function(val){
-		http.get("/api/stats?currency=" + val).done(Stat.set);
+		http.get("/api/expenses/stat?currency=" + val).done(Stat.set);
 	});
 	return actions;
 })

@@ -5,4 +5,7 @@ target/
 .project
 .springBeans
 expenses.iml
-/src/main/webapp/views/static/bower_components
+src/main/webapp/views/static/bower_components
+src/main/webapp/views/static/scripts/node_modules
+src/main/webapp/views/static/scripts/node_modules/
+.DS_Store

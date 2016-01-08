@@ -7,7 +7,8 @@ import java.util.List;
 public interface ExpenseDao {
 	List<Expense> getExpenses();
 	Expense getExpense(Long id);
-	void updateExpense(Expense expense);
+	Expense updateExpense(Expense expense);
 	Expense saveExpense(Expense expense);
-	void deleteExpense(Expense expense);
+	Expense deleteExpense(Expense expense);
+	List<Expense> getExpensesByCurrency(String currency);
 }

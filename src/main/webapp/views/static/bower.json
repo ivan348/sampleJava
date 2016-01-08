@@ -1,0 +1,33 @@
+{
+  "name": "expenses",
+  "homepage": "https://github.com/ivan348/sampleJava",
+  "description": "perfect expenses",
+  "main": "main.js",
+  "moduleType": [],
+  "keywords": [
+    "expenses"
+  ],
+  "authors": [
+    "Ivan Artsisheuski"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chartist": "~0.9.4",
+    "highcharts": "highcharts-release#~4.1.8",
+    "jquery": "~2.1.4",
+    "lodash": "~3.10.1",
+    "react-bootstrap": "~0.23.7",
+    "react-router": "~0.13.3",
+    "react": "~0.13.3",
+    "requirejs-react-jsx": "~0.14.2",
+    "reflux": "~0.2.12",
+    "requirejs": "~2.1.18"
+  }
+}

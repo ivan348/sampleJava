@@ -1,11 +1,14 @@
 define(function(require) {
-	var React = require("react");
-	var Reflux = require("reflux");
-	var Chartist = require("chartist");
-	var highcharts = require("highcharts");
-	var Stat = require("stores/Stat");
-	var actions = require("actions/actions");
-	var {Col} = require("react-bootstrap");
+	var React = require("react"), 
+		Reflux = require("reflux"),
+		Chartist = require("chartist"),
+		highcharts = require("highcharts"),
+		Stat = require("stores/Stat"),
+		actions = require("actions/actions"),
+		backend = require("utils/backend"),
+		_ = require("lodash"),
+		{Col, Input} = require("react-bootstrap"),
+		currencies = [];
 	return React.createClass({
 		mixins: [
 			Reflux.connect(Stat, "stat")
@@ -14,14 +17,19 @@ define(function(require) {
 			return {
 				width : 100 ,
 				height : 100,
-				stat: []
+				stat: [],
+				currencies: []
 			};
 		},
 		componentDidMount: function() {
 			actions.getStat("BYR");
+			backend.getCurrencies(function (res) {
+				this.setState({
+					currencies: res
+				});
+			}.bind(this));
 		},
-		render: function() {	
-			console.log(this.state.stat);
+		render: function() {
 			$('#high').highcharts({
 		        chart: {
 		            plotBackgroundColor: null,
@@ -53,9 +61,16 @@ define(function(require) {
 		            colorByPoint: true,
 		            data: this.state.stat
 		        }]
-		    });		
+		    });
+		    var currencies = _.map(this.state.currencies, function (item) {
+		    	return <option>{item}</option>
+		    });	
 			return (
 				<div className="statitics">
+					<select>
+						{currencies}
+					</select>
+					
 					<Col xs={6} id="high" width={this.state.width + "px"} height={this.state.height + "px"}></Col>
 				</div>
 			);

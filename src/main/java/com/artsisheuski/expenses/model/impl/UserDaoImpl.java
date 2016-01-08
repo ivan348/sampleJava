@@ -1,6 +1,7 @@
-package com.artsisheuski.expenses.model;
+package com.artsisheuski.expenses.model.impl;
 
 import com.artsisheuski.expenses.domain.User;
+import com.artsisheuski.expenses.model.UserDao;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

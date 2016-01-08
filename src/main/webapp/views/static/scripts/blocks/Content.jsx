@@ -1,7 +1,6 @@
 define(function(require){
 	var React = require("react");
-	var Reflux = require("reflux")
-	var apiCall = require("helpers/http");
+	var Reflux = require("reflux");
 	var {Input, Button, Col} = require("react-bootstrap");
 	var Expenses = require("stores/Expenses");
 	var actions = require("actions/actions");

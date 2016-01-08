@@ -5,7 +5,7 @@ define(function(require){
 	var actions = require("actions/actions");
 	var ExpenseStore = require("stores/Expenses");	
 	var http = require("api");
-	var fileUploader = require("helpers/fileUploader");
+	var fileUploader = require("utils/fileUploader");
 	var mapOptions = function(arr) {
 		return arr.map(function(item){
 			return <option key={item} value={item}>{item}</option>

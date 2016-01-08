@@ -20,7 +20,7 @@ define(function (require) {
             };
         },
         render: function () {
-            var text = "hello";
+            var text = "Expenses";
             return <h1>
                 <a href="#">{text}</a>
             </h1>;
@@ -52,5 +52,5 @@ define(function (require) {
             React.render(<Root/>, document.getElementById('application'));
         });
     }
-    return self
+    return self;
 })

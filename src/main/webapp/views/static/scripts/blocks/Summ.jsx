@@ -1,10 +1,14 @@
-define(function(require) {
-	var React = require('react');
-	var Reflux = require('reflux');
-	var Summ = require('stores/Summ');
-	var actions = require("actions/actions");
-	var _ = require("lodash");
-	var {Row, Col, Panel} = require('react-bootstrap');
+define(["react",
+	"reflux",
+	"stores/Summ",
+	"actions/actions",
+	"lodash",
+	"react-bootstrap"],function(React,
+		Reflux,
+		Summ,
+		actions,
+		_,
+		{Row, Col, Panel}) {
 	return React.createClass({
 		mixins: [Reflux.connect(Summ, "result")],
 		getInitialState: function() {
@@ -15,7 +19,7 @@ define(function(require) {
 		render: function() {
 			var rows = [];
 			_.each(this.state.result, function(item, n){
-				rows.push(<Row> {n} : {item}</Row>)
+				rows.push(<Row> {item.currency} : {item.sum}</Row>)
 			})
 			return (
 				<Panel>

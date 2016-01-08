@@ -8,7 +8,7 @@ define(function(require) {
 	        this.listenTo(Expenses, this.get);
 	    },
 	    get: function(){
-			http.get("/api/summ").done(this.set);
+			http.get("/api/expenses/sum").done(this.set);
 	    },
 		set: function(obj){
 			_obj = obj;

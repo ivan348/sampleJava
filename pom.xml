@@ -191,6 +191,12 @@
             <artifactId>spring-security-config</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
+        <!-- -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20151123</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -236,26 +242,6 @@
                     <path>/</path>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>com.github.eirslett</groupId>-->
-                <!--<artifactId>frontend-maven-plugin</artifactId>-->
-                <!--<version>0.0.24</version>-->
-                <!--<configuration>-->
-                    <!--<workingDirectory>src/main/webapp/views</workingDirectory>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>npm install</id>-->
-                        <!--<goals>-->
-                            <!--<goal>npm</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<arguments>install</arguments>-->
-                            <!--<installDirectory>target</installDirectory>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 </project>

@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Table(name="expenses")
 @NamedQueries({
 		@NamedQuery(name = "Expense.SelectAll", query = "select distinct e from Expense e left join fetch e.user u"),
-		@NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id")
+		@NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id"),
+		@NamedQuery(name = "Expenses.SelectByCurrency", query = "from Expense e where e.currency=:currency")
 })
 public class Expense {
 	private Long id;
