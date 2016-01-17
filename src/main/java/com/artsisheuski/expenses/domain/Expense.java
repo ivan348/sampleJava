@@ -3,94 +3,123 @@ package com.artsisheuski.expenses.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name="expenses")
+@Table(name = "expense")
 @NamedQueries({
-		@NamedQuery(name = "Expense.SelectAll", query = "select distinct e from Expense e left join fetch e.user u"),
-		@NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id"),
-		@NamedQuery(name = "Expenses.SelectByCurrency", query = "from Expense e where e.currency=:currency")
+        @NamedQuery(name = "Expense.SelectAll", query = "select distinct e from Expense e"),
+        @NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id"),
+        @NamedQuery(name = "Expenses.SelectByCurrency", query = "from Expense e where e.currency=:currency")
 })
+@org.codehaus.jackson.annotate.JsonIgnoreProperties(ignoreUnknown = true)
 public class Expense {
-	private Long id;
-	private String name;
-	private Float value;
-	private String type;
-	private String currency;
-	private String category;
-	private User user;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
 
-	@Id
-	@GeneratedValue
-	@Column(name="id")
-	public Long getId() {
-		return id;
-	}
+    @Column(name = "name")
+    private String name;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Column(name = "value")
+    private Float value;
 
-	@Column(name="name")
-	public String getName() {
-		return name;
-	}
+    @Column(name = "type")
+    private Integer type;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "currency")
+    private String currency;
 
-	@Column(name="value")
-	public Float getValue() {
-		return value;
-	}
+    @Column(name = "date")
+    @Temporal(TemporalType.DATE)
+    private Date date;
 
-	public void setValue(Float value) {
-		this.value = value;
-	}
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@Column(name="type")
-	public String getType() {
-		return type;
-	}
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	@Column(name="currency")
-	public String getCurrency() {
-		return currency;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Column(name="category")
-	public String getCategory() {
-		return category;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setCategory(String category) {
-		this.category = category;
-	}
+    public Float getValue() {
+        return value;
+    }
 
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	public User getUser() {
-		return user;
-	}
+    public void setValue(Float value) {
+        this.value = value;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public Integer getType() {
+        return type;
+    }
 
-	@Override
-	public String toString() {
-		return "Expense [id=" + id + ", name=" + name + ", value=" + value + ", type=" + type + ", currency=" + currency
-				+ ", category=" + category + "]";
-	}
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Expense{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", value=" + value +
+                ", type='" + type + '\'' +
+                ", currency='" + currency + '\'' +
+                ", date=" + date +
+                ", user=" + user +
+                ", category=" + category +
+                '}';
+    }
 
 }

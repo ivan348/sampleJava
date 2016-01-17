@@ -8,13 +8,14 @@ import javax.annotation.Resource;
 
 import com.artsisheuski.expenses.domain.Expense;
 import com.artsisheuski.expenses.model.ExpenseDao;
+import com.artsisheuski.expenses.model.abstractdao.AbstractDaoImpl;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository("expenseDao")
 @Transactional
-public class ExpenseDaoImpl implements ExpenseDao {
+public class ExpenseDaoImpl extends AbstractDaoImpl<Expense, Long> implements ExpenseDao {
     private SessionFactory sessionFactory;
 
 
@@ -27,11 +28,11 @@ public class ExpenseDaoImpl implements ExpenseDao {
         this.sessionFactory = sessionFactory;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Expense> getExpenses() {
-        return sessionFactory.getCurrentSession().getNamedQuery("Expense.SelectAll").list();
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<Expense> getExpenses() {
+//        return sessionFactory.getCurrentSession().getNamedQuery("Expense.SelectAll").list();
+//    }
 
     @Override
     public Expense getExpense(Long id) {

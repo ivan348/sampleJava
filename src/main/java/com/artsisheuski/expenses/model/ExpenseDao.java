@@ -5,7 +5,7 @@ import com.artsisheuski.expenses.domain.Expense;
 import java.util.List;
 
 public interface ExpenseDao {
-	List<Expense> getExpenses();
+	List<Expense> getAll();
 	Expense getExpense(Long id);
 	Expense updateExpense(Expense expense);
 	Expense saveExpense(Expense expense);

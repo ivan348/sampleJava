@@ -3,7 +3,11 @@ define(function (require) {
 	var getCurrencies = function (callback) {
 		return http.get("/api/expenses/currencies").done(callback);
 	}
+	var getCategories = function (callback) {
+		return http.get("/api/expenses/categories").done(callback);
+	}
 	return {
-		getCurrencies: getCurrencies
+		getCurrencies: getCurrencies,
+		getCategories: getCategories
 	}
 })

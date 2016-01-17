@@ -15,6 +15,7 @@ define(function(require){
 		http.get("api/expenses").done(Expenses.set);
 	});
 	actions.editExpense.listen(function(val){
+		debugger
 		http.put("/api/expenses", val).done(Expenses.edit);
 	});
 	actions.addExpense.listen(function(val){

@@ -1,7 +1,9 @@
 package com.artsisheuski.expenses.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import com.artsisheuski.expenses.domain.Category;
 import com.artsisheuski.expenses.domain.Expense;
 import com.artsisheuski.expenses.domain.User;
 import com.artsisheuski.expenses.model.ExpenseDao;
@@ -9,8 +11,6 @@ import com.artsisheuski.expenses.model.UserDao;
 import com.artsisheuski.expenses.service.impl.Statistics;
 import com.artsisheuski.expenses.service.ExpensesService;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +55,8 @@ public class ExpenseController {
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Expense post(@RequestBody Expense expense){
-        return expensesService.addExpense(expense);
+    Expense post(@RequestBody Map json){
+        return expensesService.addExpense(json);
     }
 
     @Transactional(value = "transactionManager")
@@ -91,6 +91,14 @@ public class ExpenseController {
         return expensesService.getCurrencies();
     }
 
+    @Transactional(value = "transactionManager")
+    @RequestMapping(value="/categories", produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    List<Category> getCategories(){
+        return expensesService.getCategories();
+    }
+
     /*
     * TODO: move to another controller
     * */
@@ -99,7 +107,7 @@ public class ExpenseController {
     public
     @ResponseBody
     List<User> getUsers() {
-        List<User> list = userDao.getUsers();
+        List<User> list = userDao.getAll();
         return list;
     }
 

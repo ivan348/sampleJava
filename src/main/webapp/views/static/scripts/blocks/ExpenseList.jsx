@@ -1,11 +1,19 @@
-define(function(require){
-	var React = require("react");
-	var Reflux = require("reflux");
-	var {Input, Button, Col, Table} = require("react-bootstrap");
-	var actions = require("actions/actions");
-	var ExpenseStore = require("stores/Expenses");	
-	var http = require("api");
-	var fileUploader = require("utils/fileUploader");
+define(["react",
+		"reflux", 
+		"react-bootstrap",
+		"actions/actions",
+		"stores/Expenses",
+		"api",
+		"utils/fileUploader",
+		"utils/backend"], function(React,
+			Reflux,
+			{Input, Button, Col, Table},
+			actions,
+			ExpenseStore,
+			http,
+			fileUploader,
+			backend){
+
 	var mapOptions = function(arr) {
 		return arr.map(function(item){
 			return <option key={item} value={item}>{item}</option>
@@ -13,7 +21,7 @@ define(function(require){
 	}
 	var currenciesOptions = mapOptions(["BYR", "USD", "EUR"]);
 	var typeOptions = mapOptions(["+", "-"]);
-	var categoryOptions = mapOptions(["Shop", "Cinema", "Eating", "Buying"])
+	// var categoryOptions = mapOptions(["Shop", "Cinema", "Eating", "Buying"])
 
 	return React.createClass({
 		mixins: [
@@ -23,7 +31,8 @@ define(function(require){
 			return {
 				expenseList: [],
 				editing: -1,
-				addingNew: false
+				addingNew: false,
+				categories: []
 			}
 		},
 		createNew: function(){
@@ -33,14 +42,23 @@ define(function(require){
 		},
 		componentDidMount: function(){
 			actions.getExpenses();
+			backend.getCategories(function (res) {
+				this.setState({
+					categories: res.map(function(item){
+						return <option value={item.id}>{item.name}</option>
+					})
+				})
+			}.bind(this));
 		},
 		saveNew: function(){
 			var expense = {
 				name: this.refs.name.getValue(),
 				value: this.refs.value.getValue(),
 				currency: this.refs.currency.getValue(),
-				type: this.refs.type.getValue(),
-				category: this.refs.category.getValue()
+				type: this.refs.type.getValue() == "+" ? 1 : 0,
+				category_id: this.refs.category.getValue(),
+				date: "01.01.2016",
+				user_id: 3
 			};			
 			if (expense.type == '-'){
 				expense.value = -1 * Math.abs(expense.value);
@@ -93,7 +111,7 @@ define(function(require){
 					<Input type="text" ref="value"/>
 					<Input type='select' ref="type">{typeOptions}</Input>
 					<Input type='select' ref="currency">{currenciesOptions}</Input>
-					<Input type='select' ref="category">{categoryOptions}</Input>
+					<Input type='select' ref="category">{this.state.categories}</Input>
 					<Button onClick={this.saveNew}>
 						Save
 					</Button>
@@ -101,7 +119,7 @@ define(function(require){
 			var button = this.state.addingNew ? formNew : 
 				<Button bsStyle="primary" onClick={this.createNew}>+</Button>;			
 			var expenseList = this.state.expenseList.map(function(item){
-				return <tr draggable="true" className={"expense-item " + (item.type =="+" ? "plus" : "minus")} key={item.id}> 
+				return <tr draggable="true" className={"expense-item " + (item.type == 1 ? "plus" : "minus")} key={item.id}> 
 					<td>
 						{self.state.editing == item.id ? 
 							<span>
@@ -129,7 +147,7 @@ define(function(require){
 						{self.state.editing == item.id ? <Input type='select' ref={"currency" + item.id} defaultValue={item.currency}>{currenciesOptions}</Input> : <p>{item.currency}</p>}
 					</td>
 					<td>
-						{self.state.editing == item.id ? <Input type='select' ref={"category" + item.id} defaultValue={item.category}>{categoryOptions}</Input> : <p>{item.category}</p>}
+						{self.state.editing == item.id ? <Input type='select' ref={"category" + item.id} defaultValue={item.category.name}>{this.state.categories}</Input> : <p>{item.category}</p>}
 					</td>
 				</tr>
 			});
