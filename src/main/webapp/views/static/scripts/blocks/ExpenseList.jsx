@@ -5,15 +5,26 @@ define(["react",
 		"stores/Expenses",
 		"api",
 		"utils/fileUploader",
-		"utils/backend"], function(React,
+		"utils/backend",
+		"jsx!./Expense"], function(React,
 			Reflux,
-			{Input, Button, Col, Table},
+			{Input, Button, Col, Table, Modal, Row},
 			actions,
 			ExpenseStore,
 			http,
 			fileUploader,
-			backend){
-
+			backend,
+			Expense){
+	var obj = {
+		id:"",
+		name:"",
+		value: "",
+		currency: "",
+		type:"",
+		category:"",
+		user_id:"",
+		date:""
+	}
 	var mapOptions = function(arr) {
 		return arr.map(function(item){
 			return <option key={item} value={item}>{item}</option>
@@ -32,7 +43,8 @@ define(["react",
 				expenseList: [],
 				editing: -1,
 				addingNew: false,
-				categories: []
+				categories: [],
+				showModal: false
 			}
 		},
 		createNew: function(){
@@ -50,25 +62,26 @@ define(["react",
 				})
 			}.bind(this));
 		},
-		saveNew: function(){
-			var expense = {
-				name: this.refs.name.getValue(),
-				value: this.refs.value.getValue(),
-				currency: this.refs.currency.getValue(),
-				type: this.refs.type.getValue() == "+" ? 1 : 0,
-				category_id: this.refs.category.getValue(),
-				date: "01.01.2016",
-				user_id: 3
-			};			
-			if (expense.type == '-'){
-				expense.value = -1 * Math.abs(expense.value);
-			} else {
-				expense.value = Math.abs(expense.value);
-			}
-			actions.addExpense(expense);
-			this.setState({
-				addingNew: false
-			});
+		saveNew: function(item){
+			debugger
+			// var expense = {
+			// 	name: item.name,
+			// 	value: item.value,
+			// 	currency: item.currency,
+			// 	type: item.type == "+" ? 1 : 0,
+			// 	category_id: item.category.id,
+			// 	date: "01.01.2016",
+			// 	user_id: 3
+			// };			
+			// if (expense.type == '-'){
+			// 	expense.value = -1 * Math.abs(expense.value);
+			// } else {
+			// 	expense.value = Math.abs(expense.value);
+			// }
+			// actions.addExpense(expense);
+			// this.setState({
+			// 	addingNew: false
+			// });
 		},
 		handleClick: function(item){
 			this.setState({
@@ -95,7 +108,7 @@ define(["react",
 			actions.editExpense(expense);
 			this.handleClick(item);
 		},
-		upload: function(e){
+		upload: function(e) {
 			var files = e.target.files;
 			var _onUpload = function(){
 
@@ -104,72 +117,40 @@ define(["react",
 				fileUploader.uploadFile(files, _onUpload)
 			}
 		},
-		render: function(){
-			var self=this;
-			var formNew = <div>
-					<Input type="text" ref="name"/>
-					<Input type="text" ref="value"/>
-					<Input type='select' ref="type">{typeOptions}</Input>
-					<Input type='select' ref="currency">{currenciesOptions}</Input>
-					<Input type='select' ref="category">{this.state.categories}</Input>
-					<Button onClick={this.saveNew}>
-						Save
-					</Button>
-				</div>
-			var button = this.state.addingNew ? formNew : 
-				<Button bsStyle="primary" onClick={this.createNew}>+</Button>;			
-			var expenseList = this.state.expenseList.map(function(item){
-				return <tr draggable="true" className={"expense-item " + (item.type == 1 ? "plus" : "minus")} key={item.id}> 
-					<td>
-						{self.state.editing == item.id ? 
-							<span>
-								<Input type="text" ref={"name" + item.id} defaultValue={item.name} onChange={this.changeName}/>						
-								<Button bsStyle="primary" onClick={self.save.bind(null, item)}>
-									Save
-								</Button>
-							</span>  : <span>
-								<span className="buttons">
-									<i className="fa fa-times pointer" onClick={self.remove.bind(null, item)}></i>
-									<i className="fa fa-pencil-square-o pointer" onClick={self.handleClick.bind(null, item)}></i>
-								</span>
-								<p>{item.name}</p>
-							</span>}
-					</td>
-					<td>
-						{self.state.editing == item.id ? 
-							<Input type="text" ref={"value" + item.id} defaultValue={item.value} onChange={this.changeValue}/> : 
-							<p>{item.value}</p>}
-					</td>
-					<td>
-						{self.state.editing == item.id ? <Input type='select' ref={"type" + item.id} defaultValue={item.type}>{typeOptions}</Input> : <p>{item.type}</p>}
-					</td>
-					<td>
-						{self.state.editing == item.id ? <Input type='select' ref={"currency" + item.id} defaultValue={item.currency}>{currenciesOptions}</Input> : <p>{item.currency}</p>}
-					</td>
-					<td>
-						{self.state.editing == item.id ? <Input type='select' ref={"category" + item.id} defaultValue={item.category.name}>{this.state.categories}</Input> : <p>{item.category}</p>}
-					</td>
-				</tr>
+		showModal: function() {
+			this.setState({
+				showModal: !this.state.showModal,
+				editing: -1
+			})
+		},
+		edit: function (id) {
+			this.setState({
+				editing: id
 			});
+		},
+		closeModal: function () {
+			this.setState({
+				showModal: false
+			});
+		},
+		render: function(){
+			var that = this;
+			var expense = function (item) {
+				return <Row key={item.id}>
+					<Button onClick={that.edit.bind(null, item.id)}>Edit</Button>
+					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.name}/> : <span> {item.name} </span>}</Col>
+					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.value}/> : <span> {item.value} </span>}</Col>
+					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.currency}/> : <span> {item.currency} </span>}</Col>
+					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.type}/> : <span> {item.type} </span>}</Col>
+					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.date}/> : <span> {item.date} </span>}</Col>
+					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type='select' ref="category">{that.state.categories}</Input> : <span> {item.category.name} </span>}</Col>
+				</Row>		
+			}	
+			var expenseList = this.state.expenseList.map(expense);
 			return <div>
-				<form>			
-					<input ref="upload" type="file" name="upload" onChange={this.upload}/>
-				</form>
-				<Table>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Value</th>
-							<th>Type</th>
-							<th>Currency</th>
-							<th>Category</th>
-						</tr>
-					</thead>
-					<tbody> 
-							{expenseList}
-					</tbody>
-				</Table>
-				{button}
+			<Expense close={this.closeModal} showModal={this.state.showModal} categories={this.state.categories} save={this.saveNew}/>
+				{expenseList}
+				<Button onClick={this.showModal.bind(null, this)}>Modal</Button>
 			</div>
 		}
 	})

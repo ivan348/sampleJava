@@ -28,6 +28,7 @@
     "react": "~0.13.3",
     "requirejs-react-jsx": "~0.14.2",
     "reflux": "~0.2.12",
-    "requirejs": "~2.1.18"
+    "requirejs": "~2.1.18",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37"
   }
 }

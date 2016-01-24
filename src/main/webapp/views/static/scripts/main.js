@@ -16,7 +16,9 @@
             "react-router": libs + "react-router/build/umd/ReactRouter",
             "jquery": libs + "jquery/dist/jquery.min",
             "chartist": libs + "chartist/dist/chartist.min",
-            "highcharts": libs + "highcharts/highcharts.src"
+            "highcharts": libs + "highcharts/highcharts.src",
+            "moment": libs + "moment/moment",
+            "datetimepicker": libs + "eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min"
         },
         shim : {
             "react": {
@@ -26,6 +28,10 @@
             "highcharts": {
                 exports: "Highcharts",
                 deps: ["jquery"]
+            },
+            "datetimepicker": {
+                exports : "datetimepicker",
+                deps: ["jquery", "moment"]
             }
         },
         config: {

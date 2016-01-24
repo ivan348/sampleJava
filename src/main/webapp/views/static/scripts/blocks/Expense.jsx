@@ -1,84 +1,89 @@
 define(function(require){
 	var React = require('react');
 	var actions = require('actions/actions');
-	var {Col, Button, Input, Row} = require('react-bootstrap');
+	var {Col, Button, Input, Row, Modal} = require('react-bootstrap');
+	var $ = require("jquery");
+	require("datetimepicker");
+
+	var format = "DD.MM.YYYY";
+	
+	// var LabeledInput = React.createClass({
+	// 	mixins: [
+	// 		React.addons.LinkedStateMixin
+	// 	],
+	// 	propTypes: {
+	// 		name: React.PropTypes.string,
+	// 		col: React.PropTypes.number
+	// 	},
+	// 	render: function () {
+	// 		return  <Col xs={2} className="expense-item">
+	// 		  	<label for={this.props.name}>{this.props.name}</label>
+	// 			<Input name={this.props.name} type="text" valueLink={this.props.name}/>
+	// 		</Col>
+	// 	}
+	// });
+	
 	return React.createClass({
 		mixins: [
 			React.addons.LinkedStateMixin
 		],
 		getInitialState: function(){
 			return {
-				editing: false,
-				expense: {
-					id: 0,
-					name: "",
-					value: 0
-				}
+				id: "",
+				name: "",
+				value: "",
+				date: "",
+				currency: "",
+				type: "",
+				category: ""
 			}
 		},
-		componentDidMount: function(){
-			this.setState({
-				expense: {
-					id: this.props.id,
-					name: this.props.name,
-					value: this.props.value					
-				}
+		componentDidMount() {
+		},
+		shouldComponentUpdate(nextProps, nextState) {
+			console.log(1, this.state);
+			console.log(2,nextState);
+			return true;
+		},
+		handleClick: function(e){
+			var that = this;
+			var el = $(e.currentTarget);
+			if (!el.data("DateTimePicker")) {
+				el.datetimepicker({
+					keepOpen: false,
+					format: format
+				});
+			}
+			el.data("DateTimePicker").show();
+			el.on("dp.change", function () {
+				that.setState({
+					date: el.val()
+				});
 			})
 		},
-		handleClick: function(){
-			this.setState({
-				editing: !this.state.editing
-			})
+		saveNew: function() {
+			this.props.save(this.state);
 		},
-		remove: function() {
-			actions.deleteExpense(this.state.expense);
-		},
-		// changeName: function(){
-		// 	this.setState({
-		// 		name: 
-		// 	})
-		// },
-		// changeValue: function(){
-		// 	this.setState({
-		// 		value: 
-		// 	})
-		// },
-		save: function(){
-			var expense = {
-				name: this.refs.name.getValue(),
-				value: this.refs.value.getValue()
-			};
-			this.setState({
-				expense: expense
-			});
-			actions.editExpense(expense);
-			this.handleClick();
-		},
-		render: function(){
-			console.log(this.linkState('expense'))
-			var form = this.state.editing ? <div>	
-					<i className="fa fa-times pointer" onClick={this.remove}></i>
-					<Col xs={6} className="expense-item">
-						<Input type="text" ref="name" valueLink={this.linkState('expense.name')}/>
-					</Col>
-					<Col xs={6} className="expense-item">
-						<Input type="text" ref="value" defaultValue={this.state.expense.value}/>
-					</Col>
-					<Button bsStyle="primary" onClick={this.save}>
-						Save
-					</Button>
-				</div> : <div>
-					<Col xs={6} className="expense-item">
-						<p>{this.state.expense.name}</p>
-					</Col>
-					<Col xs={6} className="expense-item">
-						<p>{this.state.expense.value}</p>
-					</Col>
-					<i className="fa fa-pencil-square-o pointer" onClick={this.handleClick}></i>
-				</div>
-			return <div>
-				{form}	
-			</div>
+		render: function(){ 
+			return <Modal show={this.props.showModal} onHide={this.props.close}>
+				<Modal.Header closeButton>
+					<Modal.Title>Create expense</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Row>
+						<Col xs={2} className="expense-item"><Input type="text" valueLink={this.linkState("name")}/></Col>
+						<Col xs={2} className="expense-item"><Input type="text" valueLink={this.linkState("value")}/></Col>
+						<Col xs={2} className="expense-item"><Input type="text" valueLink={this.linkState("currency")}/></Col>
+						<Col xs={2} className="expense-item"><Input type="text" valueLink={this.linkState("type")}/></Col>
+						<Col xs={2} className="expense-item"><Input id="date" type="text" onClick={this.handleClick}/></Col>
+						<Col xs={2} className="expense-item"><Input type='select' >{this.props.categories}</Input></Col>
+					</Row>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={this.saveNew}>Create</Button>
+					<Button onClick={this.props.close}>Close</Button>
+				</Modal.Footer>
+	        </Modal>
 		}
 	})
 })
