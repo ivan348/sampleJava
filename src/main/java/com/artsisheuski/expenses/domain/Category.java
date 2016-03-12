@@ -62,13 +62,4 @@ public class Category {
         this.expenses = expenses;
     }
 
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", user=" + user +
-                ", expenses=" + expenses +
-                '}';
-    }
 }

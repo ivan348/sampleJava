@@ -11,4 +11,6 @@ public interface ExpenseDao {
 	Expense saveExpense(Expense expense);
 	Expense deleteExpense(Expense expense);
 	List<Expense> getExpensesByCurrency(String currency);
+	Double getSum();
+	Double getSumByCategory(Long value);
 }

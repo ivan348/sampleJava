@@ -9,8 +9,7 @@ import java.util.Date;
 @Table(name = "expense")
 @NamedQueries({
         @NamedQuery(name = "Expense.SelectAll", query = "select distinct e from Expense e"),
-        @NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id"),
-        @NamedQuery(name = "Expenses.SelectByCurrency", query = "from Expense e where e.currency=:currency")
+        @NamedQuery(name = "Expense.SelectById", query = "from Expense e where e.id=:id")
 })
 @org.codehaus.jackson.annotate.JsonIgnoreProperties(ignoreUnknown = true)
 public class Expense {
@@ -108,18 +107,5 @@ public class Expense {
         this.date = date;
     }
 
-    @Override
-    public String toString() {
-        return "Expense{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", value=" + value +
-                ", type='" + type + '\'' +
-                ", currency='" + currency + '\'' +
-                ", date=" + date +
-                ", user=" + user +
-                ", category=" + category +
-                '}';
-    }
 
 }

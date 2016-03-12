@@ -18,9 +18,9 @@ import java.util.List;
 @Transactional
 public class CategoryDaoImpl extends AbstractDaoImpl<Category, Long> implements CategoryDao {
 
-//    @Resource(name = "sessionFactory")
-//    SessionFactory sessionFactory;
-//
+    @Resource(name = "sessionFactory")
+    SessionFactory sessionFactory;
+
 //    @Override
 //    public List<Category> getCategories() {
 //        return sessionFactory.getCurrentSession().createQuery("select distinct c from Category c").list();
@@ -30,4 +30,10 @@ public class CategoryDaoImpl extends AbstractDaoImpl<Category, Long> implements 
 //    public Category getCategryById(Long id) {
 //        return (Category) sessionFactory.getCurrentSession().createQuery("select distinct c from Category c where c.id=:id").setParameter("id", id).uniqueResult();
 //    }
+
+
+    @Override
+    public List<String> getDistinctNames() {
+        return sessionFactory.getCurrentSession().createSQLQuery("select distinct name from category").list();
+    }
 }

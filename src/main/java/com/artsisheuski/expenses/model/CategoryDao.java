@@ -11,4 +11,5 @@ import java.util.List;
 public interface CategoryDao {
     List<Category> getAll();
     Category getByKey(Long id);
+    List<String> getDistinctNames();
 }

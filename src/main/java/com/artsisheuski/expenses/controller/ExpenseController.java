@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.artsisheuski.expenses.domain.Category;
+import com.artsisheuski.expenses.domain.Currency;
 import com.artsisheuski.expenses.domain.Expense;
 import com.artsisheuski.expenses.domain.User;
 import com.artsisheuski.expenses.model.ExpenseDao;
@@ -63,8 +64,8 @@ public class ExpenseController {
     @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Expense put(@RequestBody Expense expense){
-        return expenseDao.updateExpense(expense);
+    Expense put(@RequestBody Map json){
+        return expensesService.editExpense(json);
     }
 
     @Transactional(value = "transactionManager")
@@ -87,7 +88,7 @@ public class ExpenseController {
     @RequestMapping(value="/currencies", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    List<String> getCurrencies(){
+    List<Currency> getCurrencies(){
         return expensesService.getCurrencies();
     }
 

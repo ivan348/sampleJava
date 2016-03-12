@@ -105,17 +105,4 @@ public class User {
         this.categories = categories;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", expenses=" + expenses +
-                ", categories=" + categories +
-                '}';
-    }
 }

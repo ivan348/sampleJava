@@ -6,7 +6,8 @@ define(["react",
 		"api",
 		"utils/fileUploader",
 		"utils/backend",
-		"jsx!./Expense"], function(React,
+		"jsx!./ModalNew",
+		"jsx!./HtmlUtils/Forms"], function(React,
 			Reflux,
 			{Input, Button, Col, Table, Modal, Row},
 			actions,
@@ -14,36 +15,41 @@ define(["react",
 			http,
 			fileUploader,
 			backend,
-			Expense){
-	var obj = {
-		id:"",
-		name:"",
-		value: "",
-		currency: "",
-		type:"",
-		category:"",
-		user_id:"",
-		date:""
+			ModalNew,
+			{DatePicker, EditableValue}){
+
+	var obj = function () {
+		var self = this;
+		self.id = "";
+		self.name = "";
+		self.value = "";
+		self.currency = "";
+		self.type = "";
+		self.category = "";
+		self.user_id = "";
+		self.date = "";
 	}
-	var mapOptions = function(arr) {
-		return arr.map(function(item){
-			return <option key={item} value={item}>{item}</option>
-		})
+	var mapOptions = function(arr, name, value) {
+		var res = arr.map(function(item){
+			return <option key={item[value] || item} value={item[value] || item}>{item[name] || item}</option>
+		});
+		res.splice(0, 0, <option disabled>--</option>);
+		return res;
 	}
-	var currenciesOptions = mapOptions(["BYR", "USD", "EUR"]);
 	var typeOptions = mapOptions(["+", "-"]);
-	// var categoryOptions = mapOptions(["Shop", "Cinema", "Eating", "Buying"])
 
 	return React.createClass({
 		mixins: [
-			Reflux.connect(ExpenseStore, "expenseList")
+			Reflux.connect(ExpenseStore, "expenseList"),
+			React.addons.LinkedStateMixin
 		],
 		getInitialState: function(){
 			return {
 				expenseList: [],
-				editing: -1,
+				editing: {},
 				addingNew: false,
 				categories: [],
+				currencies: [],
 				showModal: false
 			}
 		},
@@ -56,32 +62,29 @@ define(["react",
 			actions.getExpenses();
 			backend.getCategories(function (res) {
 				this.setState({
-					categories: res.map(function(item){
-						return <option value={item.id}>{item.name}</option>
-					})
+					categories: mapOptions(res, "name", "id")
+				})
+			}.bind(this));
+			backend.getCurrencies(function (res) {
+				this.setState({
+					currencies: mapOptions(res, "name", "value")
 				})
 			}.bind(this));
 		},
 		saveNew: function(item){
-			debugger
-			// var expense = {
-			// 	name: item.name,
-			// 	value: item.value,
-			// 	currency: item.currency,
-			// 	type: item.type == "+" ? 1 : 0,
-			// 	category_id: item.category.id,
-			// 	date: "01.01.2016",
-			// 	user_id: 3
-			// };			
-			// if (expense.type == '-'){
-			// 	expense.value = -1 * Math.abs(expense.value);
-			// } else {
-			// 	expense.value = Math.abs(expense.value);
-			// }
-			// actions.addExpense(expense);
-			// this.setState({
-			// 	addingNew: false
-			// });
+			var expense = {
+				name: item.name,
+				value: item.value,
+				currency: item.currency,
+				type: item.type == "+" ? 1 : 0,
+				category_id: item.category,
+				date: item.date,
+				user_id: 3
+			};
+			actions.addExpense(expense);
+			this.setState({
+				addingNew: false
+			});
 		},
 		handleClick: function(item){
 			this.setState({
@@ -91,22 +94,22 @@ define(["react",
 		remove: function(item) {
 			actions.deleteExpense(item);
 		},
-		save: function(item){
+		save: function(){
+			var item = this.state.editing;
 			var expense = {
 				id: item.id,
-				name: this.refs["name" + item.id].getValue(),
-				value: this.refs["value" + item.id].getValue(),
-				currency: this.refs["currency" + item.id].getValue(),
-				type: this.refs["type" + item.id].getValue(),
-				category: this.refs["category" + item.id].getValue()
+				name: item.name,
+				value: item.value,
+				currency: item.currency,
+				type: item.type == "+" ? 1 : 0,
+				category_id: item.category.id,
+				date: item.date,
+				user_id: 3
 			};
-			if (expense.type == '-'){
-				expense.value = -1 * Math.abs(expense.value);
-			} else {
-				expense.value = Math.abs(expense.value);
-			}
 			actions.editExpense(expense);
-			this.handleClick(item);
+			this.setState({
+				editing: {}
+			});
 		},
 		upload: function(e) {
 			var files = e.target.files;
@@ -123,9 +126,9 @@ define(["react",
 				editing: -1
 			})
 		},
-		edit: function (id) {
+		edit: function (item) {
 			this.setState({
-				editing: id
+				editing: item
 			});
 		},
 		closeModal: function () {
@@ -133,24 +136,75 @@ define(["react",
 				showModal: false
 			});
 		},
+		handleChange: function (id, e) {
+			var el = e.currentTarget;
+			var newState = {
+				editing: this.state.editing
+			};
+			newState.editing[el.name]= el.value;
+			this.setState(newState);
+		},
 		render: function(){
 			var that = this;
 			var expense = function (item) {
 				return <Row key={item.id}>
-					<Button onClick={that.edit.bind(null, item.id)}>Edit</Button>
-					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.name}/> : <span> {item.name} </span>}</Col>
-					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.value}/> : <span> {item.value} </span>}</Col>
-					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.currency}/> : <span> {item.currency} </span>}</Col>
-					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.type}/> : <span> {item.type} </span>}</Col>
-					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type="text" defaultValue={item.date}/> : <span> {item.date} </span>}</Col>
-					<Col xs={2} className="expense-item">{that.state.editing == item.id ? <Input type='select' ref="category">{that.state.categories}</Input> : <span> {item.category.name} </span>}</Col>
+					<span>
+						<Button onClick={that.save}>Save</Button>
+						<td>
+							<EditableValue type="text" name="name" onChange={that.handleChange.bind(that, item.id)}
+							 value={that.state.editing.name} editing={that.state.editing.id == item.id}/>
+						</td>
+						<td>
+							<EditableValue type="text" name="value" onChange={that.handleChange.bind(that, item.id)}
+							 value={that.state.editing.value} editing={that.state.editing.id == item.id}/>
+						</td>
+						<td>
+							<EditableValue type="text" name="currency" onChange={that.handleChange.bind(that, item.id)}
+							 value={that.state.editing.currency} editing={that.state.editing.id == item.id}/>
+						</td>
+						<td>
+							<EditableValue type="text" name="type" onChange={that.handleChange.bind(that, item.id)}
+							 value={that.state.editing.type} editing={that.state.editing.id == item.id}/>
+						</td>
+						<td>
+							<EditableValue type="date" name="date" onChange={that.handleChange.bind(that, item.id)}
+							 value={that.state.editing.date} editing={that.state.editing.id == item.id}/>
+						</td>
+						<td>
+							<EditableValue type="select" name="category" onChange={that.handleChange.bind(that, item.id)}
+							 value={that.state.editing.category} options={that.state.categories} editing={that.state.editing.id == item.id}/>
+						</td>
+						</span>
+					<span>
+						<Button onClick={that.edit.bind(null, item)}>Edit</Button>
+						<Button onClick={that.remove.bind(null, item)}>Delete</Button>
+						<Col xs={2} className="expense-item"><span>{item.name}</span></Col>
+						<Col xs={2} className="expense-item"><span>{item.value}</span></Col>
+						<Col xs={2} className="expense-item"><span>{item.currency}</span></Col>
+						<Col xs={2} className="expense-item"><span>{item.type}</span></Col>
+						<Col xs={2} className="expense-item"><span>{item.date}</span></Col>
+						<Col xs={2} className="expense-item"><span>{item.category.name}</span></Col>
+						</span>
+					
 				</Row>		
 			}	
 			var expenseList = this.state.expenseList.map(expense);
 			return <div>
-			<Expense close={this.closeModal} showModal={this.state.showModal} categories={this.state.categories} save={this.saveNew}/>
-				{expenseList}
-				<Button onClick={this.showModal.bind(null, this)}>Modal</Button>
+				<ModalNew close={this.closeModal} showModal={this.state.showModal} categories={this.state.categories} currencies={this.state.currencies} save={this.saveNew}/>
+				<table>
+					<tr>
+						<th>Name</th>
+						<th>Value</th>
+						<th>Currency</th>
+						<th>Type</th>
+						<th>Date</th>
+						<th>Category</th>
+					</tr>
+					<tr>
+						{expenseList}
+					</tr>
+				</table>
+				<Button onClick={this.showModal.bind(null, this)}>New</Button>
 			</div>
 		}
 	})
