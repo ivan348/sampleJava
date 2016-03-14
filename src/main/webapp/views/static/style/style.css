@@ -1,6 +1,9 @@
 body {
 	background-color: #EFEFEF;
 }
+.expense-table {
+	width: 100%;
+}
 .expense-item:hover .buttons {
 	display: block;
 }

@@ -76,7 +76,7 @@ public class ExpensesServiceImpl implements ExpensesService {
     @Override
     public Expense editExpense(Map json) {
         ObjectMapper mapper = new ObjectMapper();
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         mapper.setDateFormat(df);
         Expense expense = mapper.convertValue(json, Expense.class);
         if (expense.getCategory() == null) {

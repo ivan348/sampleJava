@@ -9,8 +9,8 @@ define(function (require) {
     var Route = Router.Route;
     var Routes = Router.Routes;
     var RouteHandler = Router.RouteHandler;
-    var ExpenseList = require("jsx!./blocks/ExpenseList");
-    var Statistics = require("jsx!./blocks/Statistics");
+    var ExpenseList = require("jsx!./blocks/expenseList/ExpenseList");
+    var Statistics = require("jsx!./blocks/statistic/Statistics");
     var Summ = require("jsx!./blocks/Summ");
 
     var Header = React.createClass({

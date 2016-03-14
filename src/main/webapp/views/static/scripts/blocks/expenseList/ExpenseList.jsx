@@ -7,7 +7,8 @@ define(["react",
 		"utils/fileUploader",
 		"utils/backend",
 		"jsx!./ModalNew",
-		"jsx!./HtmlUtils/Forms"], function(React,
+		"jsx!../HtmlUtils/Forms",
+		"jsx!./Expense"], function(React,
 			Reflux,
 			{Input, Button, Col, Table, Modal, Row},
 			actions,
@@ -16,19 +17,9 @@ define(["react",
 			fileUploader,
 			backend,
 			ModalNew,
-			{DatePicker, EditableValue}){
+			{DatePicker, EditableValue},
+			Expense){
 
-	var obj = function () {
-		var self = this;
-		self.id = "";
-		self.name = "";
-		self.value = "";
-		self.currency = "";
-		self.type = "";
-		self.category = "";
-		self.user_id = "";
-		self.date = "";
-	}
 	var mapOptions = function(arr, name, value) {
 		var res = arr.map(function(item){
 			return <option key={item[value] || item} value={item[value] || item}>{item[name] || item}</option>
@@ -94,8 +85,8 @@ define(["react",
 		remove: function(item) {
 			actions.deleteExpense(item);
 		},
-		save: function(){
-			var item = this.state.editing;
+		save: function(item){
+			// var item = this.state.editing;
 			var expense = {
 				id: item.id,
 				name: item.name,
@@ -145,53 +136,15 @@ define(["react",
 			this.setState(newState);
 		},
 		render: function(){
+
 			var that = this;
-			var expense = function (item) {
-				return <Row key={item.id}>
-					<span>
-						<Button onClick={that.save}>Save</Button>
-						<td>
-							<EditableValue type="text" name="name" onChange={that.handleChange.bind(that, item.id)}
-							 value={that.state.editing.name} editing={that.state.editing.id == item.id}/>
-						</td>
-						<td>
-							<EditableValue type="text" name="value" onChange={that.handleChange.bind(that, item.id)}
-							 value={that.state.editing.value} editing={that.state.editing.id == item.id}/>
-						</td>
-						<td>
-							<EditableValue type="text" name="currency" onChange={that.handleChange.bind(that, item.id)}
-							 value={that.state.editing.currency} editing={that.state.editing.id == item.id}/>
-						</td>
-						<td>
-							<EditableValue type="text" name="type" onChange={that.handleChange.bind(that, item.id)}
-							 value={that.state.editing.type} editing={that.state.editing.id == item.id}/>
-						</td>
-						<td>
-							<EditableValue type="date" name="date" onChange={that.handleChange.bind(that, item.id)}
-							 value={that.state.editing.date} editing={that.state.editing.id == item.id}/>
-						</td>
-						<td>
-							<EditableValue type="select" name="category" onChange={that.handleChange.bind(that, item.id)}
-							 value={that.state.editing.category} options={that.state.categories} editing={that.state.editing.id == item.id}/>
-						</td>
-						</span>
-					<span>
-						<Button onClick={that.edit.bind(null, item)}>Edit</Button>
-						<Button onClick={that.remove.bind(null, item)}>Delete</Button>
-						<Col xs={2} className="expense-item"><span>{item.name}</span></Col>
-						<Col xs={2} className="expense-item"><span>{item.value}</span></Col>
-						<Col xs={2} className="expense-item"><span>{item.currency}</span></Col>
-						<Col xs={2} className="expense-item"><span>{item.type}</span></Col>
-						<Col xs={2} className="expense-item"><span>{item.date}</span></Col>
-						<Col xs={2} className="expense-item"><span>{item.category.name}</span></Col>
-						</span>
-					
-				</Row>		
-			}	
-			var expenseList = this.state.expenseList.map(expense);
+			var expenseList = this.state.expenseList.map(function (item) {
+				return <Expense item={item} categories={that.state.categories} save={that.save} 
+				 handleChange={that.handleChange} save={that.save}/>
+			});
 			return <div>
 				<ModalNew close={this.closeModal} showModal={this.state.showModal} categories={this.state.categories} currencies={this.state.currencies} save={this.saveNew}/>
-				<table>
+				<table className="expense-table">
 					<tr>
 						<th>Name</th>
 						<th>Value</th>
@@ -200,9 +153,7 @@ define(["react",
 						<th>Date</th>
 						<th>Category</th>
 					</tr>
-					<tr>
 						{expenseList}
-					</tr>
 				</table>
 				<Button onClick={this.showModal.bind(null, this)}>New</Button>
 			</div>
