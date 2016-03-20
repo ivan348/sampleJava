@@ -1,26 +1,7 @@
 define(function(require){
 	var React = require('react');
-	var actions = require('actions/actions');
 	var {Col, Button, Input, Row, Modal} = require('react-bootstrap');
-	var $ = require("jquery");
-	var {DatePicker} = require("jsx!../HtmlUtils/Forms");
-	require("datetimepicker");
-	
-	var LabeledInput = React.createClass({
-		render: function () {
-			var optionsMap = {
-				select: <Input type={this.props.type} valueLink={this.props.value}>
-						{this.props.options}
-					</Input>,
-				text: <Input onClick={this.props.onClick} name={this.props.name} type={this.props.type} valueLink={this.props.value}/>,
-				date: <DatePicker type="text" name={this.props.name} value={this.props.value} onClick={this.props.onClick} format="DD.MM.YYYY"/>
-			}
-			return  <span>
-			  	<label htmlFor={this.props.name}>{this.props.caption}</label>
-			  	{optionsMap[this.props.type]}
-			</span>
-		}
-	});
+	var {DatePicker, LabeledInput} = require("jsx!../HtmlUtils/Forms");
 	
 	return React.createClass({
 		mixins: [
@@ -36,11 +17,6 @@ define(function(require){
 				type: "",
 				category: ""
 			}
-		},
-		componentDidMount() {
-		},
-		shouldComponentUpdate(nextProps, nextState) {
-			return true;
 		},
 		handleClick: function(val){
 			this.setState({

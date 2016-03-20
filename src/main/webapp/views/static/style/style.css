@@ -4,6 +4,9 @@ body {
 .expense-table {
 	width: 100%;
 }
+.expense-item {
+	line-height: 25px;
+}
 .expense-item:hover .buttons {
 	display: block;
 }

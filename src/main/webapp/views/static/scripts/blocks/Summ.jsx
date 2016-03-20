@@ -19,7 +19,7 @@ define(["react",
 		render: function() {
 			var rows = [];
 			_.each(this.state.result, function(item, n){
-				rows.push(<Row> {item.currency} : {item.sum}</Row>)
+				rows.push(<Row key={item.currency}> {item.currency} : {item.sum}</Row>)
 			})
 			return (
 				<Panel>

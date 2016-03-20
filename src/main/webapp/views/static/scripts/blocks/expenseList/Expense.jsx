@@ -11,9 +11,9 @@ define(["react",
 		handleChange: function (e) {
 			var el = e.currentTarget;
 			var newState = {
-				editing: this.state.item
+				item: this.state.item
 			};
-			newState.editing[el.name]= el.value;
+			newState.item[el.name] = el.value;
 			this.setState(newState);
 		},
 		handleClick: function(val){
@@ -36,34 +36,31 @@ define(["react",
 			this.props.save(this.state.item);
 		},
 		render: function () {
-			// <Button onClick={this.remove.bind(null, item)}>Delete</Button>
-			// 			<Button onClick={this.save}>Save</Button>
-			return <tr>
+			return <tr className={"expense-item " + (this.props.item.type == 1 ? "plus" : "minus")}>
 				<td>
 					{this.state.editing 
-						? <Button onClick={this.save}>Save</Button> 
-						: <Button onClick={this.edit.bind(null, this.props.item)}>Edit</Button>}						
+					? <Button onClick={this.save}>Save</Button>
+					: <span className="buttons">
+						<i className="fa fa-times pointer" onClick={this.props.remove.bind(null, this.props.item)}></i>
+						<i className="fa fa-pencil-square-o pointer" onClick={this.edit}></i>
+					</span>}			
 					<EditableValue type="text" name="name" onChange={this.handleChange}
 					 value={this.props.item.name} editing={this.state.editing}/>
 				</td>
 				<td>
-					<EditableValue type="text" name="value" onChange={this.props.handleChange}
+					<EditableValue type="text" name="value" onChange={this.handleChange}
 					 value={this.props.item.value} editing={this.state.editing}/>
 				</td>
 				<td>
-					<EditableValue type="text" name="currency" onChange={this.props.handleChange}
+					<EditableValue type="text" name="currency" onChange={this.handleChange}
 					 value={this.props.item.currency} editing={this.state.editing}/>
 				</td>
 				<td>
-					<EditableValue type="text" name="type" onChange={this.props.handleChange}
-					 value={this.props.item.type} editing={this.state.editing}/>
-				</td>
-				<td>
-					<EditableValue type="date" name="date" onChange={this.props.handleChange}
+					<EditableValue type="date" name="date" onChange={this.handleChange}
 					 value={this.props.item.date} editing={this.state.editing} onClick={this.handleClick}/>
 				</td>
 				<td>
-					<EditableValue type="select" name="category" onChange={this.props.handleChange}
+					<EditableValue type="select" name="category" onChange={this.handleChange}
 					 value={this.props.item.category} options={this.props.categories} editing={this.state.editing}/>
 				</td>
 			</tr>
